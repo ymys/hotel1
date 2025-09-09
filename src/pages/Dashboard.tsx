@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { User, Calendar, Heart, Settings, CreditCard, Bell, MapPin, Star, Phone, Mail } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
+import { useUserAuth } from '../contexts/UserAuthContext';
 
 interface Booking {
   id: string;
-  hotel: {
+  branch: {
     name: string;
     location: string;
     image: string;
@@ -27,7 +28,7 @@ interface Booking {
   status: 'confirmed' | 'completed' | 'cancelled';
 }
 
-interface SavedHotel {
+interface SavedBranch {
   id: string;
   name: string;
   location: string;
@@ -61,21 +62,30 @@ interface UserProfile {
 }
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, isLoading, logout } = useUserAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'bookings' | 'saved' | 'profile'>('overview');
   
-  // Mock data - in real app, fetch from API
-  const [userProfile] = useState<UserProfile>({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 987-6543',
-    dateOfBirth: '1990-05-15',
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!isLoading && !user) {
+      navigate('/login');
+    }
+  }, [user, isLoading, navigate]);
+  
+  // Default user profile structure for display
+  const userProfile: UserProfile = {
+    firstName: user?.name?.split(' ')[0] || 'User',
+    lastName: user?.name?.split(' ').slice(1).join(' ') || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    dateOfBirth: '',
     address: {
-      street: '123 Main Street',
-      city: 'New York',
-      state: 'NY',
-      zipCode: '10001',
-      country: 'United States'
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: ''
     },
     preferences: {
       currency: 'USD',
@@ -86,15 +96,27 @@ const Dashboard: React.FC = () => {
         push: true
       }
     }
-  });
+  };
+  
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-vinotel-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   const [bookings] = useState<Booking[]>([
     {
       id: 'BK123456789',
-      hotel: {
-        name: 'Grand Palace Hotel',
+      branch: {
+        name: 'Vinotel Grand Palace',
         location: 'Downtown, New York',
-        image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20grand%20palace%20style%20architecture%20elegant%20facade&image_size=square',
+        image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20vinotel%20branch%20exterior%20grand%20palace%20style%20architecture%20elegant%20facade&image_size=square',
         rating: 4.8
       },
       room: {
@@ -112,10 +134,10 @@ const Dashboard: React.FC = () => {
     },
     {
       id: 'BK987654321',
-      hotel: {
-        name: 'Seaside Resort',
+      branch: {
+        name: 'Vinotel Seaside Resort',
         location: 'Miami Beach, FL',
-        image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=beachfront%20resort%20hotel%20tropical%20palm%20trees%20ocean%20view&image_size=square',
+        image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=beachfront%20vinotel%20branch%20resort%20tropical%20palm%20trees%20ocean%20view&image_size=square',
         rating: 4.6
       },
       room: {
@@ -133,20 +155,20 @@ const Dashboard: React.FC = () => {
     }
   ]);
 
-  const [savedHotels] = useState<SavedHotel[]>([
+  const [savedBranches] = useState<SavedBranch[]>([
     {
       id: '1',
-      name: 'Mountain View Lodge',
+      name: 'Vinotel Mountain View Lodge',
       location: 'Aspen, CO',
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20lodge%20hotel%20snow%20peaks%20cozy%20wooden%20architecture&image_size=square',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20vinotel%20branch%20lodge%20snow%20peaks%20cozy%20wooden%20architecture&image_size=square',
       rating: 4.7,
       price: 299
     },
     {
       id: '2',
-      name: 'City Center Hotel',
+      name: 'Vinotel City Center',
       location: 'San Francisco, CA',
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20city%20hotel%20urban%20architecture%20glass%20facade%20downtown&image_size=square',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20vinotel%20branch%20city%20urban%20architecture%20glass%20facade%20downtown&image_size=square',
       rating: 4.5,
       price: 189
     }
@@ -186,8 +208,8 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="text-center p-4 bg-vinotel-secondary/5 rounded-lg">
             <Heart className="w-8 h-8 text-vinotel-secondary mx-auto mb-2" />
-            <div className="text-2xl font-bold text-gray-900">{savedHotels.length}</div>
-            <div className="text-sm text-gray-600">Saved Hotels</div>
+            <div className="text-2xl font-bold text-gray-900">{savedBranches.length}</div>
+            <div className="text-sm text-gray-600">Saved Branches</div>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <Star className="w-8 h-8 text-green-600 mx-auto mb-2" />
@@ -203,13 +225,13 @@ const Dashboard: React.FC = () => {
           {bookings.slice(0, 2).map((booking) => (
             <div key={booking.id} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
               <img
-                src={booking.hotel.image}
-                alt={booking.hotel.name}
+                src={booking.branch.image}
+                alt={booking.branch.name}
                 className="w-16 h-16 object-cover rounded-lg"
               />
               <div className="flex-1">
-                <h4 className="font-semibold text-gray-900">{booking.hotel.name}</h4>
-                <p className="text-sm text-gray-600">{booking.hotel.location}</p>
+                <h4 className="font-semibold text-gray-900">{booking.branch.name}</h4>
+                <p className="text-sm text-gray-600">{booking.branch.location}</p>
                 <p className="text-sm text-gray-600">
                   {formatDate(booking.dates.checkIn)} - {formatDate(booking.dates.checkOut)}
                 </p>
@@ -246,19 +268,19 @@ const Dashboard: React.FC = () => {
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex items-start space-x-4 mb-4 lg:mb-0">
                   <img
-                    src={booking.hotel.image}
-                    alt={booking.hotel.name}
+                    src={booking.branch.image}
+                    alt={booking.branch.name}
                     className="w-20 h-20 object-cover rounded-lg"
                   />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{booking.hotel.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{booking.branch.name}</h3>
                     <div className="flex items-center text-gray-600 mb-2">
                       <MapPin className="w-4 h-4 mr-1" />
-                      <span className="text-sm">{booking.hotel.location}</span>
+                      <span className="text-sm">{booking.branch.location}</span>
                     </div>
                     <div className="flex items-center mb-2">
                       <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
-                      <span className="text-sm font-medium">{booking.hotel.rating}</span>
+                      <span className="text-sm font-medium">{booking.branch.rating}</span>
                     </div>
                     <p className="text-sm text-gray-600">{booking.room.name} - {booking.room.type}</p>
                   </div>
@@ -290,36 +312,36 @@ const Dashboard: React.FC = () => {
     </div>
   );
 
-  const renderSavedHotels = () => (
+  const renderSavedBranches = () => (
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Saved Hotels</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Saved Branches</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {savedHotels.map((hotel) => (
-            <div key={hotel.id} className="border border-gray-200 rounded-lg p-4">
+          {savedBranches.map((branch) => (
+            <div key={branch.id} className="border border-gray-200 rounded-lg p-4">
               <img
-                src={hotel.image}
-                alt={hotel.name}
+                src={branch.image}
+                alt={branch.name}
                 className="w-full h-48 object-cover rounded-lg mb-4"
               />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{hotel.name}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{branch.name}</h3>
               <div className="flex items-center text-gray-600 mb-2">
                 <MapPin className="w-4 h-4 mr-1" />
-                <span className="text-sm">{hotel.location}</span>
+                <span className="text-sm">{branch.location}</span>
               </div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
                   <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
-                  <span className="text-sm font-medium">{hotel.rating}</span>
+                  <span className="text-sm font-medium">{branch.rating}</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-lg font-bold text-vinotel-primary">${hotel.price}</span>
+                  <span className="text-lg font-bold text-vinotel-primary">${branch.price}</span>
                   <span className="text-sm text-gray-600">/night</span>
                 </div>
               </div>
               <div className="flex space-x-2">
-                <Link to={`/hotel/${hotel.id}`} className="flex-1">
-                  <Button className="w-full" size="sm">View Hotel</Button>
+                <Link to={`/branch/${branch.id}`} className="flex-1">
+                  <Button className="w-full" size="sm">View Branch</Button>
                 </Link>
                 <Button variant="outline" size="sm">
                   <Heart className="w-4 h-4" />
@@ -515,7 +537,7 @@ const Dashboard: React.FC = () => {
                   }`}
                 >
                   <Heart className="w-5 h-5 mr-3" />
-                  Saved Hotels
+                  Saved Branches
                 </button>
                 
                 <button
@@ -529,6 +551,16 @@ const Dashboard: React.FC = () => {
                   <Settings className="w-5 h-5 mr-3" />
                   Profile Settings
                 </button>
+                
+                <button
+                  onClick={logout}
+                  className="w-full flex items-center px-3 py-2 text-left rounded-md transition-colors text-red-600 hover:bg-red-50 mt-4 border-t border-gray-200 pt-4"
+                >
+                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Sign Out
+                </button>
               </nav>
             </div>
           </div>
@@ -537,7 +569,7 @@ const Dashboard: React.FC = () => {
           <div className="flex-1">
             {activeTab === 'overview' && renderOverview()}
             {activeTab === 'bookings' && renderBookings()}
-            {activeTab === 'saved' && renderSavedHotels()}
+            {activeTab === 'saved' && renderSavedBranches()}
             {activeTab === 'profile' && renderProfile()}
           </div>
         </div>

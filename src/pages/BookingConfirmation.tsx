@@ -7,7 +7,7 @@ import Button from '../components/ui/Button';
 
 interface BookingDetails {
   id: string;
-  hotel: {
+  branch: {
     name: string;
     location: string;
     rating: number;
@@ -56,13 +56,13 @@ const BookingConfirmation: React.FC = () => {
         // Mock booking data - in real app, fetch from API
         const mockBooking: BookingDetails = {
           id: bookingId || 'BK123456789',
-          hotel: {
-            name: 'Grand Palace Hotel',
+          branch: {
+            name: 'Vinotel Grand Palace',
             location: 'Downtown, New York',
             rating: 4.8,
-            image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20grand%20palace%20style%20architecture%20elegant%20facade&image_size=landscape_16_9',
+            image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20vinotel%20branch%20exterior%20grand%20palace%20style%20architecture%20elegant%20facade&image_size=landscape_16_9',
             phone: '+1 (555) 123-4567',
-            email: 'info@grandpalacehotel.com',
+            email: 'info@vinotelgrandpalace.com',
             amenities: ['Free WiFi', 'Parking', 'Restaurant', 'Fitness Center']
           },
           room: {
@@ -129,8 +129,8 @@ const BookingConfirmation: React.FC = () => {
   const handleShareBooking = () => {
     if (navigator.share && booking) {
       navigator.share({
-        title: 'Hotel Booking Confirmation',
-        text: `My booking at ${booking.hotel.name} is confirmed! Booking ID: ${booking.id}`,
+        title: 'Vinotel Branch Booking Confirmation',
+        text: `My booking at ${booking.branch.name} is confirmed! Booking ID: ${booking.id}`,
         url: window.location.href
       });
     } else {
@@ -187,27 +187,27 @@ const BookingConfirmation: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Hotel Information */}
+            {/* Branch Information */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Hotel Details</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Branch Details</h2>
               <div className="flex items-start space-x-4">
                 <img
-                  src={booking.hotel.image}
-                  alt={booking.hotel.name}
+                  src={booking.branch.image}
+                  alt={booking.branch.name}
                   className="w-24 h-24 object-cover rounded-lg"
                 />
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{booking.hotel.name}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{booking.branch.name}</h3>
                   <div className="flex items-center text-gray-600 mb-2">
                     <MapPin className="w-4 h-4 mr-1" />
-                    <span>{booking.hotel.location}</span>
+                    <span>{booking.branch.location}</span>
                   </div>
                   <div className="flex items-center mb-3">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="ml-1 font-medium">{booking.hotel.rating}</span>
+                    <span className="ml-1 font-medium">{booking.branch.rating}</span>
                   </div>
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {booking.hotel.amenities.map((amenity) => (
+                    {booking.branch.amenities.map((amenity) => (
                       <div key={amenity} className="flex items-center bg-gray-100 px-2 py-1 rounded text-sm">
                         {amenityIcons[amenity]}
                         <span className="ml-1">{amenity}</span>
@@ -217,11 +217,11 @@ const BookingConfirmation: React.FC = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-sm text-gray-600">
                     <div className="flex items-center">
                       <Phone className="w-4 h-4 mr-1" />
-                      <span>{booking.hotel.phone}</span>
+                      <span>{booking.branch.phone}</span>
                     </div>
                     <div className="flex items-center">
                       <Mail className="w-4 h-4 mr-1" />
-                      <span>{booking.hotel.email}</span>
+                      <span>{booking.branch.email}</span>
                     </div>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ const BookingConfirmation: React.FC = () => {
                 <li>• Check-out time: 11:00 AM</li>
                 <li>• Please bring a valid photo ID and the credit card used for booking</li>
                 <li>• Cancellation policy: Free cancellation up to 24 hours before check-in</li>
-                <li>• For any changes or questions, contact the hotel directly</li>
+                <li>• For any changes or questions, contact the branch directly</li>
               </ul>
             </div>
           </div>

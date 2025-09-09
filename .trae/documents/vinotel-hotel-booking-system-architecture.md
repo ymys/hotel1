@@ -44,67 +44,67 @@ graph TD
 
 ## 3. Route Definitions
 
-| Route                    | Purpose                                                              |
-| ------------------------ | -------------------------------------------------------------------- |
-| /                        | Home page with hero section, search widget, and featured hotels      |
-| /search                  | Search results page with hotel listings, filters, and map view       |
-| /hotel/:id               | Hotel details page with comprehensive information and booking widget |
-| /booking/:hotelId        | Booking page with reservation form and payment processing            |
-| /confirmation/:bookingId | Booking confirmation page with reservation details                   |
-| /login                   | User authentication page with login form and social options          |
-| /register                | User registration page with account creation form                    |
-| /forgot-password         | Password recovery page with email verification                       |
-| /dashboard               | User dashboard with booking history and profile management           |
-| /dashboard/bookings      | Detailed booking history and management                              |
-| /dashboard/profile       | User profile settings and preferences                                |
-| /dashboard/favorites     | Saved hotels and wishlist management                                 |
+| Route                    | Purpose                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------ |
+| /                        | Home page with hero section, location search widget, and featured Vinotel branches   |
+| /branches                | Branch listings page with Vinotel branch listings, filters, and map view             |
+| /branch/:id              | Branch details page with comprehensive Vinotel branch information and booking widget |
+| /booking/:branchId       | Booking page with reservation form and payment processing                            |
+| /confirmation/:bookingId | Booking confirmation page with reservation details                                   |
+| /login                   | User authentication page with login form and social options                          |
+| /register                | User registration page with account creation form                                    |
+| /forgot-password         | Password recovery page with email verification                                       |
+| /dashboard               | User dashboard with booking history and profile management                           |
+| /dashboard/bookings      | Detailed booking history and management                                              |
+| /dashboard/profile       | User profile settings and preferences                                                |
+| /dashboard/favorites     | Saved Vinotel branches and wishlist management                                       |
 
 ## 4. API Definitions
 
 ### 4.1 Core API
 
-**Hotel Search**
+**Branch Search**
 
 ```
-GET /api/hotels/search
+GET /api/branches/search
 ```
 
 Request:
 
-| Param Name  | Param Type | isRequired | Description                                      |
-| ----------- | ---------- | ---------- | ------------------------------------------------ |
-| destination | string     | true       | Search destination (city, region, or hotel name) |
-| checkIn     | string     | true       | Check-in date in ISO format                      |
-| checkOut    | string     | true       | Check-out date in ISO format                     |
-| guests      | number     | true       | Number of guests                                 |
-| rooms       | number     | false      | Number of rooms (default: 1)                     |
-| minPrice    | number     | false      | Minimum price filter                             |
-| maxPrice    | number     | false      | Maximum price filter                             |
-| amenities   | string\[]  | false      | Array of required amenities                      |
-| starRating  | number     | false      | Minimum star rating                              |
+| Param Name | Param Type | isRequired | Description                                    |
+| ---------- | ---------- | ---------- | ---------------------------------------------- |
+| location   | string     | true       | Search location (city, region, or branch name) |
+| checkIn    | string     | true       | Check-in date in ISO format                    |
+| checkOut   | string     | true       | Check-out date in ISO format                   |
+| guests     | number     | true       | Number of guests                               |
+| rooms      | number     | false      | Number of rooms (default: 1)                   |
+| minPrice   | number     | false      | Minimum price filter                           |
+| maxPrice   | number     | false      | Maximum price filter                           |
+| amenities  | string\[]  | false      | Array of required amenities                    |
+| branchType | string     | false      | Branch type filter (business, resort, city)    |
 
 Response:
 
-| Param Name | Param Type    | Description              |
-| ---------- | ------------- | ------------------------ |
-| hotels     | Hotel\[]      | Array of matching hotels |
-| totalCount | number        | Total number of results  |
-| filters    | FilterOptions | Available filter options |
+| Param Name | Param Type    | Description                        |
+| ---------- | ------------- | ---------------------------------- |
+| branches   | Branch\[]     | Array of matching Vinotel branches |
+| totalCount | number        | Total number of results            |
+| filters    | FilterOptions | Available filter options           |
 
-**Hotel Details**
+**Branch Details**
 
 ```
-GET /api/hotels/:id
+GET /api/branches/:id
 ```
 
 Response:
 
-| Param Name | Param Type   | Description                |
-| ---------- | ------------ | -------------------------- |
-| hotel      | HotelDetails | Complete hotel information |
-| rooms      | Room\[]      | Available room types       |
-| amenities  | Amenity\[]   | Hotel amenities list       |
-| reviews    | Review\[]    | Guest reviews and ratings  |
+| Param Name | Param Type    | Description                         |
+| ---------- | ------------- | ----------------------------------- |
+| branch     | BranchDetails | Complete Vinotel branch information |
+| rooms      | Room\[]       | Available room types                |
+| amenities  | Amenity\[]    | Branch amenities list               |
+| reviews    | Review\[]     | Guest reviews and ratings           |
 
 **Create Booking**
 
@@ -116,7 +116,7 @@ Request:
 
 | Param Name      | Param Type   | isRequired | Description               |
 | --------------- | ------------ | ---------- | ------------------------- |
-| hotelId         | string       | true       | Hotel identifier          |
+| branchId        | string       | true       | Vinotel branch identifier |
 | roomId          | string       | true       | Room type identifier      |
 | checkIn         | string       | true       | Check-in date             |
 | checkOut        | string       | true       | Check-out date            |
@@ -142,10 +142,10 @@ erDiagram
     USERS ||--o{ BOOKINGS : makes
     USERS ||--o{ REVIEWS : writes
     USERS ||--o{ FAVORITES : saves
-    HOTELS ||--o{ ROOMS : contains
-    HOTELS ||--o{ REVIEWS : receives
-    HOTELS ||--o{ BOOKINGS : accepts
-    HOTELS ||--o{ FAVORITES : featured_in
+    BRANCHES ||--o{ ROOMS : contains
+    BRANCHES ||--o{ REVIEWS : receives
+    BRANCHES ||--o{ BOOKINGS : accepts
+    BRANCHES ||--o{ FAVORITES : featured_in
     BOOKINGS ||--|| ROOMS : reserves
     BOOKINGS ||--o{ PAYMENTS : processes
 
@@ -161,7 +161,7 @@ erDiagram
         timestamp updated_at
     }
 
-    HOTELS {
+    BRANCHES {
         uuid id PK
         string name
         text description
@@ -170,7 +170,7 @@ erDiagram
         string country
         float latitude
         float longitude
-        integer star_rating
+        string branch_type
         jsonb amenities
         jsonb images
         boolean is_active
@@ -180,7 +180,7 @@ erDiagram
 
     ROOMS {
         uuid id PK
-        uuid hotel_id FK
+        uuid branch_id FK
         string name
         text description
         integer capacity
@@ -196,7 +196,7 @@ erDiagram
     BOOKINGS {
         uuid id PK
         uuid user_id FK
-        uuid hotel_id FK
+        uuid branch_id FK
         uuid room_id FK
         string confirmation_number UK
         date check_in
@@ -212,7 +212,7 @@ erDiagram
     REVIEWS {
         uuid id PK
         uuid user_id FK
-        uuid hotel_id FK
+        uuid branch_id FK
         uuid booking_id FK
         integer rating
         text comment
@@ -224,7 +224,7 @@ erDiagram
     FAVORITES {
         uuid id PK
         uuid user_id FK
-        uuid hotel_id FK
+        uuid branch_id FK
         timestamp created_at
     }
 
@@ -274,11 +274,11 @@ GRANT SELECT ON users TO anon;
 GRANT ALL PRIVILEGES ON users TO authenticated;
 ```
 
-**Hotels Table**
+**Branches Table**
 
 ```sql
--- Create hotels table
-CREATE TABLE hotels (
+-- Create branches table
+CREATE TABLE branches (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -287,7 +287,7 @@ CREATE TABLE hotels (
     country VARCHAR(100) NOT NULL,
     latitude DECIMAL(10, 8),
     longitude DECIMAL(11, 8),
-    star_rating INTEGER CHECK (star_rating >= 1 AND star_rating <= 5),
+    branch_type VARCHAR(50) DEFAULT 'standard',
     amenities JSONB DEFAULT '[]',
     images JSONB DEFAULT '[]',
     is_active BOOLEAN DEFAULT true,
@@ -296,20 +296,20 @@ CREATE TABLE hotels (
 );
 
 -- Create indexes
-CREATE INDEX idx_hotels_city ON hotels(city);
-CREATE INDEX idx_hotels_star_rating ON hotels(star_rating);
-CREATE INDEX idx_hotels_location ON hotels(latitude, longitude);
+CREATE INDEX idx_branches_city ON branches(city);
+CREATE INDEX idx_branches_type ON branches(branch_type);
+CREATE INDEX idx_branches_location ON branches(latitude, longitude);
 
 -- Enable RLS
-ALTER TABLE hotels ENABLE ROW LEVEL SECURITY;
+ALTER TABLE branches ENABLE ROW LEVEL SECURITY;
 
 -- Create policies
-CREATE POLICY "Hotels are viewable by everyone" ON hotels
+CREATE POLICY "Branches are viewable by everyone" ON branches
     FOR SELECT USING (is_active = true);
 
 -- Grant permissions
-GRANT SELECT ON hotels TO anon;
-GRANT ALL PRIVILEGES ON hotels TO authenticated;
+GRANT SELECT ON branches TO anon;
+GRANT ALL PRIVILEGES ON branches TO authenticated;
 ```
 
 **Rooms Table**
@@ -318,7 +318,7 @@ GRANT ALL PRIVILEGES ON hotels TO authenticated;
 -- Create rooms table
 CREATE TABLE rooms (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    hotel_id UUID REFERENCES hotels(id) ON DELETE CASCADE,
+    branch_id UUID REFERENCES branches(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     capacity INTEGER NOT NULL CHECK (capacity > 0),
@@ -332,7 +332,7 @@ CREATE TABLE rooms (
 );
 
 -- Create indexes
-CREATE INDEX idx_rooms_hotel_id ON rooms(hotel_id);
+CREATE INDEX idx_rooms_branch_id ON rooms(branch_id);
 CREATE INDEX idx_rooms_price ON rooms(base_price);
 
 -- Enable RLS
@@ -354,7 +354,7 @@ GRANT ALL PRIVILEGES ON rooms TO authenticated;
 CREATE TABLE bookings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    hotel_id UUID REFERENCES hotels(id) ON DELETE CASCADE,
+    branch_id UUID REFERENCES branches(id) ON DELETE CASCADE,
     room_id UUID REFERENCES rooms(id) ON DELETE CASCADE,
     confirmation_number VARCHAR(20) UNIQUE NOT NULL,
     check_in DATE NOT NULL,
@@ -370,7 +370,7 @@ CREATE TABLE bookings (
 
 -- Create indexes
 CREATE INDEX idx_bookings_user_id ON bookings(user_id);
-CREATE INDEX idx_bookings_hotel_id ON bookings(hotel_id);
+CREATE INDEX idx_bookings_branch_id ON bookings(branch_id);
 CREATE INDEX idx_bookings_dates ON bookings(check_in, check_out);
 CREATE INDEX idx_bookings_status ON bookings(status);
 
@@ -391,16 +391,16 @@ GRANT ALL PRIVILEGES ON bookings TO authenticated;
 **Initial Data**
 
 ```sql
--- Insert sample hotels
-INSERT INTO hotels (name, description, address, city, country, latitude, longitude, star_rating, amenities, images) VALUES
-('Vinotel Grand Palace', 'Luxury hotel in the heart of the city with world-class amenities and exceptional service.', '123 Grand Avenue', 'New York', 'USA', 40.7589, -73.9851, 5, '["WiFi", "Pool", "Spa", "Gym", "Restaurant", "Bar", "Concierge"]', '["https://images.unsplash.com/photo-1566073771259-6a8506099945"]'),
-('Vinotel Seaside Resort', 'Beachfront resort with stunning ocean views and premium facilities.', '456 Ocean Drive', 'Miami', 'USA', 25.7617, -80.1918, 4, '["WiFi", "Beach Access", "Pool", "Restaurant", "Water Sports"]', '["https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9"]'),
-('Vinotel Business Center', 'Modern business hotel with state-of-the-art conference facilities.', '789 Business Blvd', 'San Francisco', 'USA', 37.7749, -122.4194, 4, '["WiFi", "Business Center", "Gym", "Restaurant", "Meeting Rooms"]', '["https://images.unsplash.com/photo-1564501049412-61c2a3083791"]');
+-- Insert sample branches
+INSERT INTO branches (name, description, address, city, country, latitude, longitude, branch_type, amenities, images) VALUES
+('Vinotel Grand Palace', 'Luxury branch in the heart of the city with world-class amenities and exceptional service.', '123 Grand Avenue', 'New York', 'USA', 40.7589, -73.9851, 'luxury', '["WiFi", "Pool", "Spa", "Gym", "Restaurant", "Bar", "Concierge"]', '["https://images.unsplash.com/photo-1566073771259-6a8506099945"]'),
+('Vinotel Seaside Resort', 'Beachfront resort branch with stunning ocean views and premium facilities.', '456 Ocean Drive', 'Miami', 'USA', 25.7617, -80.1918, 'resort', '["WiFi", "Beach Access", "Pool", "Restaurant", "Water Sports"]', '["https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9"]'),
+('Vinotel Business Center', 'Modern business branch with state-of-the-art conference facilities.', '789 Business Blvd', 'San Francisco', 'USA', 37.7749, -122.4194, 'business', '["WiFi", "Business Center", "Gym", "Restaurant", "Meeting Rooms"]', '["https://images.unsplash.com/photo-1564501049412-61c2a3083791"]');
 
 -- Insert sample rooms
-INSERT INTO rooms (hotel_id, name, description, capacity, base_price, amenities, images, quantity) 
+INSERT INTO rooms (branch_id, name, description, capacity, base_price, amenities, images, quantity) 
 SELECT 
-    h.id,
+    b.id,
     'Deluxe Suite',
     'Spacious suite with premium amenities and city views.',
     2,
@@ -408,6 +408,6 @@ SELECT
     '["King Bed", "City View", "Mini Bar", "Work Desk", "Premium WiFi"]',
     '["https://images.unsplash.com/photo-1631049307264-da0ec9d70304"]',
     5
-FROM hotels h WHERE h.name = 'Vinotel Grand Palace';
+FROM branches b WHERE b.name = 'Vinotel Grand Palace';
 ```
 

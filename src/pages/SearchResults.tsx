@@ -4,7 +4,7 @@ import { Filter, SlidersHorizontal, MapPin, Star, Grid, List, ChevronDown } from
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import SearchWidget from '../components/SearchWidget';
-import HotelCard, { Hotel } from '../components/HotelCard';
+import BranchCard, { Branch } from '../components/BranchCard';
 import Button from '../components/ui/Button';
 
 const SearchResults: React.FC = () => {
@@ -16,7 +16,7 @@ const SearchResults: React.FC = () => {
     priceRange: [0, 1000],
     rating: 0,
     amenities: [] as string[],
-    hotelType: [] as string[]
+    branchType: [] as string[]
   });
 
   // Get search parameters
@@ -26,11 +26,11 @@ const SearchResults: React.FC = () => {
   const guests = searchParams.get('guests') || '2';
   const rooms = searchParams.get('rooms') || '1';
 
-  // Mock hotel data
-  const allHotels: Hotel[] = [
+  // Mock branch data
+  const allBranches: Branch[] = [
     {
       id: '1',
-      name: 'The Grand Palazzo',
+      name: 'Vinotel Grand Palazzo',
       location: 'New York, NY',
       rating: 4.8,
       reviewCount: 1247,
@@ -43,7 +43,7 @@ const SearchResults: React.FC = () => {
     },
     {
       id: '2',
-      name: 'Oceanview Resort & Spa',
+      name: 'Vinotel Oceanview Resort & Spa',
       location: 'Miami Beach, FL',
       rating: 4.9,
       reviewCount: 892,
@@ -54,7 +54,7 @@ const SearchResults: React.FC = () => {
     },
     {
       id: '3',
-      name: 'Mountain Lodge Retreat',
+      name: 'Vinotel Mountain Lodge Retreat',
       location: 'Aspen, CO',
       rating: 4.7,
       reviewCount: 634,
@@ -66,18 +66,18 @@ const SearchResults: React.FC = () => {
     },
     {
       id: '4',
-      name: 'Urban Boutique Hotel',
+      name: 'Vinotel Urban Boutique',
       location: 'San Francisco, CA',
       rating: 4.6,
       reviewCount: 523,
       price: 179,
       image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20boutique%20hotel%20urban%20design%20contemporary%20architecture%20city%20setting&image_size=landscape_4_3',
       amenities: ['wifi', 'restaurant', 'gym'],
-      description: 'A stylish boutique hotel in the heart of San Francisco with modern amenities and personalized service.'
+      description: 'A stylish boutique branch in the heart of San Francisco with modern amenities and personalized service.'
     },
     {
       id: '5',
-      name: 'Desert Oasis Resort',
+      name: 'Vinotel Desert Oasis Resort',
       location: 'Scottsdale, AZ',
       rating: 4.5,
       reviewCount: 789,
@@ -89,27 +89,27 @@ const SearchResults: React.FC = () => {
     },
     {
       id: '6',
-      name: 'Historic Downtown Inn',
+      name: 'Vinotel Historic Downtown Inn',
       location: 'Charleston, SC',
       rating: 4.4,
       reviewCount: 456,
       price: 159,
       image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=historic%20southern%20hotel%20colonial%20architecture%20charming%20facade%20cobblestone%20street&image_size=landscape_4_3',
       amenities: ['wifi', 'restaurant'],
-      description: 'Step back in time at our beautifully restored historic inn in the heart of Charleston\'s historic district.'
+      description: 'Step back in time at our beautifully restored historic branch in the heart of Charleston\'s historic district.'
     }
   ];
 
-  const [filteredHotels, setFilteredHotels] = useState<Hotel[]>(allHotels);
+  const [filteredBranches, setFilteredBranches] = useState<Branch[]>(allBranches);
 
-  // Filter and sort hotels
+  // Filter and sort branches
   useEffect(() => {
-    let filtered = [...allHotels];
+    let filtered = [...allBranches];
 
     // Apply filters
-    filtered = filtered.filter(hotel => {
-      const priceInRange = hotel.price >= filters.priceRange[0] && hotel.price <= filters.priceRange[1];
-      const ratingMatch = hotel.rating >= filters.rating;
+    filtered = filtered.filter(branch => {
+      const priceInRange = branch.price >= filters.priceRange[0] && branch.price <= filters.priceRange[1];
+      const ratingMatch = branch.rating >= filters.rating;
       return priceInRange && ratingMatch;
     });
 
@@ -132,7 +132,7 @@ const SearchResults: React.FC = () => {
         filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
     }
 
-    setFilteredHotels(filtered);
+    setFilteredBranches(filtered);
   }, [filters, sortBy]);
 
   const handleFilterChange = (filterType: string, value: any) => {
@@ -148,7 +148,7 @@ const SearchResults: React.FC = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="mb-4">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              {destination ? `Hotels in ${destination}` : 'Search Results'}
+              {destination ? `Vinotel Branches in ${destination}` : 'Search Results'}
             </h1>
             <div className="flex items-center text-gray-600 text-sm space-x-4">
               {checkIn && checkOut && (
@@ -173,7 +173,7 @@ const SearchResults: React.FC = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setFilters({ priceRange: [0, 1000], rating: 0, amenities: [], hotelType: [] })}
+                  onClick={() => setFilters({ priceRange: [0, 1000], rating: 0, amenities: [], branchType: [] })}
                 >
                   Clear All
                 </Button>
@@ -252,7 +252,7 @@ const SearchResults: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
               <div className="mb-4 sm:mb-0">
                 <p className="text-gray-600">
-                  {filteredHotels.length} hotels found
+                  {filteredBranches.length} branches found
                 </p>
               </div>
               
@@ -302,37 +302,37 @@ const SearchResults: React.FC = () => {
               </div>
             </div>
 
-            {/* Hotel Results */}
-            {filteredHotels.length > 0 ? (
+            {/* Branch Results */}
+            {filteredBranches.length > 0 ? (
               <div className={`grid gap-6 ${
                 viewMode === 'grid' 
                   ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' 
                   : 'grid-cols-1'
               }`}>
-                {filteredHotels.map((hotel) => (
-                  <HotelCard 
-                    key={hotel.id} 
-                    hotel={hotel} 
-                    className={viewMode === 'list' ? 'md:flex md:max-w-none' : ''}
-                  />
+                {filteredBranches.map((branch) => (
+                  <BranchCard
+                     key={branch.id}
+                     branch={branch}
+                     className={viewMode === 'list' ? 'md:flex md:max-w-none' : ''}
+                   />
                 ))}
               </div>
             ) : (
               <div className="text-center py-12">
                 <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No hotels found</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No branches found</h3>
                 <p className="text-gray-600 mb-6">Try adjusting your filters or search criteria</p>
-                <Button onClick={() => setFilters({ priceRange: [0, 1000], rating: 0, amenities: [], hotelType: [] })}>
+                <Button onClick={() => setFilters({ priceRange: [0, 1000], rating: 0, amenities: [], branchType: [] })}>
                   Clear Filters
                 </Button>
               </div>
             )}
 
             {/* Load More */}
-            {filteredHotels.length > 0 && (
+            {filteredBranches.length > 0 && (
               <div className="text-center mt-12">
                 <Button variant="outline" size="lg">
-                  Load More Hotels
+                  Load More Branches
                 </Button>
               </div>
             )}

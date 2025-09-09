@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Phone, Lock, ArrowLeft } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
+import { useUserAuth } from '../contexts/UserAuthContext';
 
 interface FormData {
   firstName: string;
@@ -29,6 +30,7 @@ interface FormErrors {
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const { register, isLoading: authLoading, user } = useUserAuth();
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -113,6 +115,13 @@ const Register: React.FC = () => {
     }
   };
 
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -124,17 +133,21 @@ const Register: React.FC = () => {
     setErrors({});
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const fullName = `${formData.firstName} ${formData.lastName}`;
+      const result = await register(formData.email, formData.password, fullName, formData.phone);
       
-      // Mock registration - in real app, this would be an API call
-      // Successful registration
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('userEmail', formData.email);
-      localStorage.setItem('userName', `${formData.firstName} ${formData.lastName}`);
-      navigate('/dashboard');
-    } catch (error) {
-      setErrors({ general: 'An error occurred during registration. Please try again.' });
+      if (!result.success) {
+        setErrors({ 
+          general: result.error || 'An error occurred during registration. Please try again.' 
+        });
+        return;
+      }
+      
+      // Registration successful, user will be redirected by useEffect
+    } catch (error: any) {
+      setErrors({ 
+        general: error.message || 'An error occurred during registration. Please try again.' 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -408,9 +421,9 @@ const Register: React.FC = () => {
                 type="submit"
                 size="lg"
                 className="w-full"
-                disabled={isLoading}
+                disabled={isLoading || authLoading}
               >
-                {isLoading ? 'Creating Account...' : 'Create Account'}
+                {isLoading || authLoading ? 'Creating Account...' : 'Create Account'}
               </Button>
             </form>
 

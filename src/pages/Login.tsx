@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { useUserAuth } from '@/contexts/UserAuthContext';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
@@ -18,6 +19,8 @@ interface FormErrors {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login, isLoading: authLoading, error: authError, clearError, isRegistered } = useUserAuth();
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: ''
@@ -25,6 +28,21 @@ const Login: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isRegistered) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [isRegistered, navigate, location]);
+
+  // Handle auth errors
+  useEffect(() => {
+    if (authError) {
+      setErrors({ general: authError });
+    }
+  }, [authError]);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -66,22 +84,19 @@ const Login: React.FC = () => {
 
     setIsLoading(true);
     setErrors({});
+    clearError();
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const result = await login(formData.email, formData.password);
       
-      // Mock authentication - in real app, this would be an API call
-      if (formData.email === 'demo@vinotel.com' && formData.password === 'password') {
-        // Successful login
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userEmail', formData.email);
-        navigate('/dashboard');
+      if (result.success) {
+        const from = location.state?.from?.pathname || '/dashboard';
+        navigate(from, { replace: true });
       } else {
-        setErrors({ general: 'Invalid email or password. Try demo@vinotel.com / password' });
+        setErrors({ general: result.error || 'Login failed' });
       }
     } catch (error) {
-      setErrors({ general: 'An error occurred. Please try again.' });
+      setErrors({ general: 'An unexpected error occurred. Please try again.' });
     } finally {
       setIsLoading(false);
     }
@@ -124,12 +139,7 @@ const Login: React.FC = () => {
                 </div>
               )}
 
-              {/* Demo Credentials Info */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-blue-800 text-sm font-medium mb-1">Demo Credentials:</p>
-                <p className="text-blue-700 text-sm">Email: demo@vinotel.com</p>
-                <p className="text-blue-700 text-sm">Password: password</p>
-              </div>
+
 
               {/* Email Field */}
               <div>
@@ -222,9 +232,9 @@ const Login: React.FC = () => {
                 type="submit"
                 size="lg"
                 className="w-full"
-                disabled={isLoading}
+                disabled={isLoading || authLoading}
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {(isLoading || authLoading) ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
 

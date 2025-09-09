@@ -8,7 +8,23 @@ import {
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
-import { Hotel } from '../components/HotelCard';
+
+interface Branch {
+  id: string;
+  name: string;
+  location: string;
+  rating: number;
+  reviewCount: number;
+  price: number;
+  originalPrice?: number;
+  images: string[];
+  description: string;
+  amenities: string[];
+  phone: string;
+  email: string;
+  checkInTime: string;
+  checkOutTime: string;
+}
 
 interface RoomType {
   id: string;
@@ -33,7 +49,7 @@ interface Review {
   helpful: number;
 }
 
-const HotelDetails: React.FC = () => {
+const BranchDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
@@ -42,8 +58,8 @@ const HotelDetails: React.FC = () => {
   const [guests, setGuests] = useState(2);
   const [rooms, setRooms] = useState(1);
 
-  // Mock hotel data - in real app, this would come from API
-  const hotel: Hotel & { 
+  // Mock branch data - in real app, this would come from API
+  const branch: Branch & { 
     images: string[];
     fullDescription: string;
     address: string;
@@ -54,27 +70,25 @@ const HotelDetails: React.FC = () => {
     policies: string[];
   } = {
     id: id || '1',
-    name: 'The Grand Palazzo',
+    name: 'Vinotel Grand Palazzo',
     location: 'New York, NY',
     rating: 4.8,
     reviewCount: 1247,
     price: 299,
     originalPrice: 399,
-    image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20grand%20palazzo%20style%20architecture%20elegant%20facade%20golden%20hour&image_size=landscape_4_3',
     images: [
-      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20grand%20palazzo%20style%20architecture%20elegant%20facade%20golden%20hour&image_size=landscape_4_3',
-      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20lobby%20marble%20floors%20crystal%20chandelier%20elegant%20interior%20design&image_size=landscape_4_3',
-      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20room%20king%20bed%20city%20view%20modern%20elegant%20decor&image_size=landscape_4_3',
-      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20restaurant%20fine%20dining%20elegant%20atmosphere%20gourmet%20cuisine&image_size=landscape_4_3',
-      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20spa%20wellness%20center%20relaxation%20luxury%20treatment%20rooms&image_size=landscape_4_3'
+      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20vinotel%20branch%20exterior%20grand%20palazzo%20style%20architecture%20elegant%20facade%20golden%20hour&image_size=landscape_4_3',
+      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20vinotel%20branch%20lobby%20marble%20floors%20crystal%20chandelier%20elegant%20interior%20design&image_size=landscape_4_3',
+      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20vinotel%20branch%20room%20king%20bed%20city%20view%20modern%20elegant%20decor&image_size=landscape_4_3',
+      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=vinotel%20branch%20restaurant%20fine%20dining%20elegant%20atmosphere%20gourmet%20cuisine&image_size=landscape_4_3',
+      'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=vinotel%20branch%20spa%20wellness%20center%20relaxation%20luxury%20treatment%20rooms&image_size=landscape_4_3'
     ],
     amenities: ['wifi', 'parking', 'restaurant', 'gym', 'pool', 'spa'],
     description: 'Experience luxury at its finest in the heart of Manhattan with stunning city views and world-class amenities.',
     fullDescription: 'The Grand Palazzo stands as a beacon of luxury in the heart of Manhattan, offering an unparalleled experience for discerning travelers. Our elegantly appointed rooms and suites feature breathtaking city views, marble bathrooms, and state-of-the-art amenities. Indulge in world-class dining at our award-winning restaurant, rejuvenate at our full-service spa, or maintain your fitness routine in our fully equipped gym. With impeccable service and attention to detail, The Grand Palazzo ensures every moment of your stay is extraordinary.',
-    featured: true,
     address: '123 Fifth Avenue, New York, NY 10001',
     phone: '+1 (212) 555-0123',
-    email: 'reservations@grandpalazzo.com',
+    email: 'reservations@vinotel.com',
     checkInTime: '3:00 PM',
     checkOutTime: '12:00 PM',
     policies: [
@@ -138,7 +152,7 @@ const HotelDetails: React.FC = () => {
       userName: 'Sarah Johnson',
       rating: 5,
       date: '2024-01-15',
-      comment: 'Absolutely stunning hotel! The service was impeccable and the room was beautifully appointed. The location is perfect for exploring Manhattan.',
+      comment: 'Absolutely stunning Vinotel branch! The service was impeccable and the room was beautifully appointed. The location is perfect for exploring Manhattan.',
       helpful: 12
     },
     {
@@ -146,7 +160,7 @@ const HotelDetails: React.FC = () => {
       userName: 'Michael Chen',
       rating: 4,
       date: '2024-01-10',
-      comment: 'Great hotel with excellent amenities. The spa was fantastic and the restaurant served amazing food. Only minor issue was the noise from the street.',
+      comment: 'Great Vinotel branch with excellent amenities. The spa was fantastic and the restaurant served amazing food. Only minor issue was the noise from the street.',
       helpful: 8
     },
     {
@@ -182,11 +196,11 @@ const HotelDetails: React.FC = () => {
   };
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % hotel.images.length);
+    setCurrentImageIndex((prev) => (prev + 1) % branch.images.length);
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + hotel.images.length) % hotel.images.length);
+    setCurrentImageIndex((prev) => (prev - 1 + branch.images.length) % branch.images.length);
   };
 
   return (
@@ -196,8 +210,8 @@ const HotelDetails: React.FC = () => {
       {/* Image Gallery */}
       <div className="relative h-96 md:h-[500px] overflow-hidden">
         <img
-          src={hotel.images[currentImageIndex]}
-          alt={hotel.name}
+          src={branch.images[currentImageIndex]}
+          alt={branch.name}
           className="w-full h-full object-cover"
         />
         
@@ -217,7 +231,7 @@ const HotelDetails: React.FC = () => {
         
         {/* Image Indicators */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {hotel.images.map((_, index) => (
+          {branch.images.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentImageIndex(index)}
@@ -243,32 +257,32 @@ const HotelDetails: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Hotel Info */}
+            {/* Branch Info */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="mb-4">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{hotel.name}</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">{branch.name}</h1>
                 <div className="flex items-center text-gray-600 mb-2">
                   <MapPin className="w-5 h-5 mr-2" />
-                  <span>{hotel.address}</span>
+                  <span>{branch.address}</span>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center">
-                    {renderStars(hotel.rating)}
-                    <span className="ml-2 font-medium">{hotel.rating}</span>
+                    {renderStars(branch.rating)}
+                    <span className="ml-2 font-medium">{branch.rating}</span>
                   </div>
-                  <span className="text-gray-600">({hotel.reviewCount} reviews)</span>
+                  <span className="text-gray-600">({branch.reviewCount} reviews)</span>
                 </div>
               </div>
               
               <p className="text-gray-700 leading-relaxed mb-6">
-                {hotel.fullDescription}
+                {branch.fullDescription}
               </p>
               
               {/* Amenities */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {hotel.amenities.map((amenity, index) => (
+                  {branch.amenities.map((amenity, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       {amenityIcons[amenity] || <div className="w-5 h-5 bg-gray-300 rounded" />}
                       <span className="text-gray-700 capitalize">{amenity}</span>
@@ -394,11 +408,11 @@ const HotelDetails: React.FC = () => {
               <div className="mb-6">
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="text-3xl font-bold text-vinotel-primary">
-                    ${hotel.price}
+                    ${branch.price}
                   </span>
-                  {hotel.originalPrice && (
+                  {branch.originalPrice && (
                     <span className="text-xl text-gray-500 line-through">
-                      ${hotel.originalPrice}
+                      ${branch.originalPrice}
                     </span>
                   )}
                 </div>
@@ -463,7 +477,7 @@ const HotelDetails: React.FC = () => {
                 </div>
               </div>
 
-              <Link to={`/booking/${hotel.id}`}>
+              <Link to={`/booking/${branch.id}`}>
                 <Button size="lg" className="w-full mb-4">
                   Book Now
                 </Button>
@@ -473,23 +487,23 @@ const HotelDetails: React.FC = () => {
                 Free cancellation until 24 hours before check-in
               </div>
               
-              {/* Hotel Contact Info */}
+              {/* Branch Contact Info */}
               <div className="border-t pt-4 space-y-2 text-sm">
                 <div className="flex items-center space-x-2">
                   <span className="font-medium">Phone:</span>
-                  <span className="text-vinotel-primary">{hotel.phone}</span>
+                  <span className="text-vinotel-primary">{branch.phone}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="font-medium">Email:</span>
-                  <span className="text-vinotel-primary">{hotel.email}</span>
+                  <span className="text-vinotel-primary">{branch.email}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="font-medium">Check-in:</span>
-                  <span>{hotel.checkInTime}</span>
+                  <span>{branch.checkInTime}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="font-medium">Check-out:</span>
-                  <span>{hotel.checkOutTime}</span>
+                  <span>{branch.checkOutTime}</span>
                 </div>
               </div>
             </div>
@@ -502,4 +516,4 @@ const HotelDetails: React.FC = () => {
   );
 };
 
-export default HotelDetails;
+export default BranchDetails;

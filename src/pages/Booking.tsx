@@ -5,7 +5,7 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
 
-interface Hotel {
+interface Branch {
   id: string;
   name: string;
   location: string;
@@ -49,11 +49,11 @@ interface FormErrors {
 }
 
 const Booking: React.FC = () => {
-  const { hotelId } = useParams<{ hotelId: string }>();
+  const { branchId } = useParams<{ branchId: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
-  const [hotel, setHotel] = useState<Hotel | null>(null);
+  const [branch, setBranch] = useState<Branch | null>(null);
   const [roomTypes, setRoomTypes] = useState<RoomType[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
   const [checkIn, setCheckIn] = useState(searchParams.get('checkIn') || '');
@@ -86,12 +86,12 @@ const Booking: React.FC = () => {
 
   useEffect(() => {
     // Mock data - in real app, fetch from API
-    const mockHotel: Hotel = {
-      id: hotelId || '1',
-      name: 'Grand Palace Hotel',
+    const mockBranch: Branch = {
+      id: branchId || '1',
+      name: 'Vinotel Grand Palace',
       location: 'Downtown, New York',
       rating: 4.8,
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20grand%20palace%20style%20architecture%20elegant%20facade&image_size=landscape_16_9',
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20vinotel%20branch%20exterior%20grand%20palace%20style%20architecture%20elegant%20facade&image_size=landscape_16_9',
       amenities: ['Free WiFi', 'Parking', 'Restaurant', 'Fitness Center']
     };
     
@@ -103,7 +103,7 @@ const Booking: React.FC = () => {
         price: 299,
         maxGuests: 2,
         amenities: ['Free WiFi', 'Air Conditioning', 'Mini Bar', 'Room Service'],
-        images: ['https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20room%20deluxe%20modern%20interior%20city%20view&image_size=landscape_16_9'],
+        images: ['https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20vinotel%20room%20deluxe%20modern%20interior%20city%20view&image_size=landscape_16_9'],
         available: 3
       },
       {
@@ -113,15 +113,15 @@ const Booking: React.FC = () => {
         price: 499,
         maxGuests: 4,
         amenities: ['Free WiFi', 'Air Conditioning', 'Mini Bar', 'Room Service', 'Balcony', 'Jacuzzi'],
-        images: ['https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20suite%20executive%20premium%20living%20area%20elegant&image_size=landscape_16_9'],
+        images: ['https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20vinotel%20suite%20executive%20premium%20living%20area%20elegant&image_size=landscape_16_9'],
         available: 2
       }
     ];
     
-    setHotel(mockHotel);
+    setBranch(mockBranch);
     setRoomTypes(mockRoomTypes);
     setSelectedRoom(mockRoomTypes[0]);
-  }, [hotelId]);
+  }, [branchId]);
 
   const amenityIcons: { [key: string]: React.ReactNode } = {
     'Free WiFi': <Wifi className="w-4 h-4" />,
@@ -204,12 +204,12 @@ const Booking: React.FC = () => {
     }
   };
 
-  if (!hotel) {
+  if (!branch) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-vinotel-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading hotel details...</p>
+          <p className="text-gray-600">Loading branch details...</p>
         </div>
       </div>
     );
@@ -227,7 +227,7 @@ const Booking: React.FC = () => {
             className="flex items-center text-vinotel-primary hover:text-vinotel-primary/80 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to Hotel Details
+            Back to Branch Details
           </button>
         </div>
 
@@ -261,26 +261,26 @@ const Booking: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Hotel Info */}
+            {/* Branch Info */}
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
               <div className="flex items-start space-x-4">
                 <img
-                  src={hotel.image}
-                  alt={hotel.name}
+                  src={branch.image}
+                  alt={branch.name}
                   className="w-24 h-24 object-cover rounded-lg"
                 />
                 <div className="flex-1">
-                  <h1 className="text-2xl font-bold text-gray-900 mb-2">{hotel.name}</h1>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-2">{branch.name}</h1>
                   <div className="flex items-center text-gray-600 mb-2">
                     <MapPin className="w-4 h-4 mr-1" />
-                    <span>{hotel.location}</span>
+                    <span>{branch.location}</span>
                   </div>
                   <div className="flex items-center mb-3">
                     <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="ml-1 font-medium">{hotel.rating}</span>
+                    <span className="ml-1 font-medium">{branch.rating}</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {hotel.amenities.map((amenity) => (
+                    {branch.amenities.map((amenity) => (
                       <div key={amenity} className="flex items-center bg-gray-100 px-2 py-1 rounded text-sm">
                         {amenityIcons[amenity]}
                         <span className="ml-1">{amenity}</span>

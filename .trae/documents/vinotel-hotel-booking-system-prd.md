@@ -1,40 +1,42 @@
 # Vinotel Hotel Booking System - Product Requirements Document
 
 ## 1. Product Overview
-Vinotel Hotel Booking System is a modern, responsive web application that enables users to search, compare, and book hotel accommodations with an elegant and intuitive user experience.
+Vinotel Hotel Booking System is a modern, responsive web application designed for the Vinotel hotel brand to manage bookings across multiple branch locations with an elegant and intuitive user experience.
 
-The system addresses the need for a streamlined hotel booking process, targeting both leisure and business travelers who seek a hassle-free reservation experience. The platform provides comprehensive hotel information, real-time availability, and secure booking management to maximize user satisfaction and conversion rates.
+The system addresses the need for a centralized booking platform for Vinotel's multiple hotel branches, targeting both leisure and business travelers who seek a consistent, hassle-free reservation experience across all Vinotel locations. The platform provides comprehensive information about all Vinotel properties, real-time availability across branches, and secure booking management to maximize guest satisfaction and brand loyalty.
 
 ## 2. Core Features
 
 ### 2.1 User Roles
 | Role | Registration Method | Core Permissions |
 |------|---------------------|------------------|
-| Guest User | No registration required | Can search hotels, view details, and browse without booking |
-| Registered User | Email registration with verification | Can book rooms, manage reservations, save favorites, and access booking history |
-| Hotel Manager | Admin invitation with verification | Can manage hotel listings, room inventory, pricing, and view booking analytics |
+| Guest User | No registration required | Can search Vinotel locations, view branch details, and browse without booking |
+| Registered User | Email registration with verification | Can book rooms across all Vinotel branches, manage reservations, save favorite locations, and access booking history |
+| Branch Manager | Admin invitation with verification | Can manage specific branch listings, room inventory, pricing, and view branch analytics |
+| Regional Manager | Admin invitation with verification | Can oversee multiple branches, view consolidated reports, and manage regional operations |
+| Corporate Admin | Admin invitation with verification | Can manage all Vinotel branches, corporate settings, and access system-wide analytics |
 
 ### 2.2 Feature Module
 Our Vinotel hotel booking system consists of the following main pages:
-1. **Home page**: hero section with search widget, featured hotels showcase, destination highlights, and user testimonials.
-2. **Search results page**: hotel listings with filters, map view, sorting options, and pagination.
-3. **Hotel details page**: comprehensive hotel information, room types, amenities, photos gallery, reviews, and booking widget.
+1. **Home page**: hero section with location search widget, featured Vinotel branches showcase, destination highlights, and guest testimonials.
+2. **Branch listings page**: Vinotel branch listings with filters, map view, sorting options, and pagination.
+3. **Branch details page**: comprehensive Vinotel branch information, room types, amenities, photos gallery, reviews, and booking widget.
 4. **Booking page**: reservation form, guest details, payment processing, and booking confirmation.
-5. **User dashboard**: booking history, profile management, saved hotels, and account settings.
+5. **User dashboard**: booking history across all branches, profile management, saved Vinotel locations, and account settings.
 6. **Authentication pages**: login, registration, and password recovery forms.
 
 ### 2.3 Page Details
 | Page Name | Module Name | Feature description |
 |-----------|-------------|---------------------|
 | Home page | Hero Section | Display prominent search widget with destination, check-in/out dates, guest selection, and call-to-action button |
-| Home page | Featured Hotels | Showcase top-rated hotels with images, ratings, pricing, and quick booking options |
+| Home page | Featured Branches | Showcase top-rated Vinotel branches with images, ratings, pricing, and quick booking options |
 | Home page | Destination Highlights | Present popular destinations with attractive visuals and promotional offers |
 | Home page | Testimonials | Display customer reviews and ratings to build trust and credibility |
-| Search Results | Hotel Listings | Show hotel cards with images, ratings, amenities, pricing, and availability status |
+| Branch Listings | Branch Cards | Show Vinotel branch cards with images, ratings, amenities, pricing, and availability status |
 | Search Results | Filter Panel | Provide filters for price range, star rating, amenities, location, and guest ratings |
-| Search Results | Map Integration | Display hotels on interactive map with location markers and proximity information |
+| Branch Listings | Map Integration | Display Vinotel branches on interactive map with location markers and proximity information |
 | Search Results | Sorting Options | Enable sorting by price, rating, distance, and popularity |
-| Hotel Details | Hotel Information | Present comprehensive details including description, amenities, policies, and contact information |
+| Branch Details | Branch Information | Present comprehensive Vinotel branch details including description, amenities, policies, and contact information |
 | Hotel Details | Room Types | Display available room categories with images, descriptions, capacity, and pricing |
 | Hotel Details | Photo Gallery | Showcase high-quality hotel and room images with lightbox functionality |
 | Hotel Details | Reviews Section | Show guest reviews with ratings, comments, and review filtering options |
@@ -44,7 +46,7 @@ Our Vinotel hotel booking system consists of the following main pages:
 | Booking Page | Booking Confirmation | Display booking summary, confirmation details, and email notification |
 | User Dashboard | Booking History | List past and upcoming reservations with status, details, and management options |
 | User Dashboard | Profile Management | Allow users to update personal information, preferences, and notification settings |
-| User Dashboard | Saved Hotels | Display favorited hotels with quick booking and comparison features |
+| User Dashboard | Saved Branches | Display favorited Vinotel branches with quick booking and comparison features |
 | Authentication | Login Form | Secure user authentication with email/password and social login options |
 | Authentication | Registration Form | User account creation with email verification and terms acceptance |
 | Authentication | Password Recovery | Password reset functionality with email verification and security questions |
@@ -52,26 +54,29 @@ Our Vinotel hotel booking system consists of the following main pages:
 ## 3. Core Process
 
 **Guest User Flow:**
-Guest users can browse the homepage, search for hotels, view search results, and explore hotel details. To complete a booking, they must register or login to access the booking functionality.
+Guest users can browse the homepage, search for Vinotel branch locations, view branch listings, and explore individual branch details. To complete a booking, they must register or login to access the booking functionality.
 
 **Registered User Flow:**
-Registered users can perform all guest actions plus complete bookings, manage reservations, save favorite hotels, and access their booking history through the user dashboard.
+Registered users can perform all guest actions plus complete bookings across any Vinotel branch, manage reservations, save favorite branch locations, and access their consolidated booking history through the user dashboard.
 
-**Hotel Manager Flow:**
-Hotel managers can login to access their management dashboard, update hotel information, manage room inventory and pricing, and view booking analytics and reports.
+**Branch Manager Flow:**
+Branch managers can login to access their branch management dashboard, update their specific branch information, manage room inventory and pricing, and view branch-specific booking analytics and reports.
+
+**Regional/Corporate Manager Flow:**
+Regional and corporate managers can access consolidated dashboards to oversee multiple branches, view system-wide analytics, manage corporate policies, and coordinate operations across the Vinotel brand.
 
 ```mermaid
 graph TD
-    A[Home Page] --> B[Search Results]
+    A[Home Page] --> B[Branch Listings]
     A --> C[Login/Register]
-    B --> D[Hotel Details]
+    B --> D[Branch Details]
     D --> E[Booking Page]
     E --> F[Payment]
     F --> G[Booking Confirmation]
     C --> H[User Dashboard]
     H --> I[Booking History]
     H --> J[Profile Settings]
-    H --> K[Saved Hotels]
+    H --> K[Saved Branches]
     K --> D
     I --> D
 ```
@@ -90,11 +95,11 @@ graph TD
 | Page Name | Module Name | UI Elements |
 |-----------|-------------|-------------|
 | Home page | Hero Section | Full-width background image with overlay, centered search widget with rounded inputs, prominent CTA button with gradient background |
-| Home page | Featured Hotels | Grid layout with hotel cards featuring high-quality images, star ratings with gold color, price badges, and hover animations |
-| Search Results | Hotel Listings | List/grid toggle view, hotel cards with left-aligned images, right-aligned pricing, and quick action buttons |
+| Home page | Featured Branches | Grid layout with Vinotel branch cards featuring high-quality images, consistent brand styling, price badges, and hover animations |
+| Branch Listings | Branch Cards | List/grid toggle view, Vinotel branch cards with left-aligned images, right-aligned pricing, and quick action buttons |
 | Search Results | Filter Panel | Collapsible sidebar with grouped filters, range sliders for pricing, checkbox amenities, and clear filter options |
-| Hotel Details | Photo Gallery | Masonry layout with primary hero image and thumbnail grid, lightbox modal with navigation controls |
-| Hotel Details | Booking Widget | Sticky sidebar widget with date pickers, dropdown selectors, price breakdown, and prominent booking button |
+| Branch Details | Photo Gallery | Masonry layout with primary hero image and thumbnail grid, lightbox modal with navigation controls |
+| Branch Details | Booking Widget | Sticky sidebar widget with date pickers, dropdown selectors, price breakdown, and prominent booking button |
 | Booking Page | Payment Form | Step-by-step wizard with progress indicator, secure form fields, payment method icons, and SSL security badges |
 | User Dashboard | Navigation | Sidebar navigation with user avatar, menu items with icons, and active state highlighting |
 

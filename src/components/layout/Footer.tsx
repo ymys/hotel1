@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
               <span className="text-2xl font-bold">VINOTEL</span>
             </div>
             <p className="text-gray-200 text-sm leading-relaxed">
-              Your trusted partner for luxury hotel bookings worldwide. Experience comfort, elegance, and exceptional service.
+              Your trusted partner for luxury Vinotel branch bookings worldwide. Experience comfort, elegance, and exceptional service.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-200 hover:text-vinotel-secondary transition-colors">

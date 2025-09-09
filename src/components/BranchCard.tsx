@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Star, MapPin, Wifi, Car, Coffee, Dumbbell, Heart } from 'lucide-react';
 import Button from './ui/Button';
 
-export interface Hotel {
+export interface Branch {
   id: string;
   name: string;
   location: string;
@@ -17,8 +17,8 @@ export interface Hotel {
   featured?: boolean;
 }
 
-interface HotelCardProps {
-  hotel: Hotel;
+interface BranchCardProps {
+  branch: Branch;
   variant?: 'default' | 'featured';
   className?: string;
 }
@@ -30,7 +30,7 @@ const amenityIcons: { [key: string]: React.ReactNode } = {
   gym: <Dumbbell className="w-4 h-4" />,
 };
 
-const HotelCard: React.FC<HotelCardProps> = ({ hotel, variant = 'default', className = '' }) => {
+const BranchCard: React.FC<BranchCardProps> = ({ branch, variant = 'default', className = '' }) => {
   const isFeatured = variant === 'featured';
   
   const renderStars = (rating: number) => {
@@ -51,8 +51,8 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, variant = 'default', class
       {/* Image Container */}
       <div className="relative overflow-hidden">
         <img
-          src={hotel.image}
-          alt={hotel.name}
+          src={branch.image}
+          alt={branch.name}
           className={`w-full object-cover transition-transform duration-300 group-hover:scale-105 ${
             isFeatured ? 'h-64' : 'h-48'
           }`}
@@ -64,16 +64,16 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, variant = 'default', class
         </button>
         
         {/* Featured Badge */}
-        {hotel.featured && (
+        {branch.featured && (
           <div className="absolute top-3 left-3 bg-vinotel-secondary text-white px-3 py-1 rounded-full text-sm font-medium">
             Featured
           </div>
         )}
         
         {/* Discount Badge */}
-        {hotel.originalPrice && (
+        {branch.originalPrice && (
           <div className="absolute bottom-3 left-3 bg-red-500 text-white px-2 py-1 rounded text-sm font-medium">
-            {Math.round((1 - hotel.price / hotel.originalPrice) * 100)}% OFF
+            {Math.round((1 - branch.price / branch.originalPrice) * 100)}% OFF
           </div>
         )}
       </div>
@@ -85,38 +85,38 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, variant = 'default', class
           <h3 className={`font-bold text-gray-900 mb-2 line-clamp-2 ${
             isFeatured ? 'text-xl' : 'text-lg'
           }`}>
-            {hotel.name}
+            {branch.name}
           </h3>
           
           <div className="flex items-center text-gray-600 mb-2">
             <MapPin className="w-4 h-4 mr-1" />
-            <span className="text-sm">{hotel.location}</span>
+            <span className="text-sm">{branch.location}</span>
           </div>
           
           <div className="flex items-center space-x-2">
             <div className="flex items-center">
-              {renderStars(hotel.rating)}
+              {renderStars(branch.rating)}
             </div>
             <span className="text-sm text-gray-600">
-              {hotel.rating} ({hotel.reviewCount} reviews)
+              {branch.rating} ({branch.reviewCount} reviews)
             </span>
           </div>
         </div>
 
         {/* Description */}
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {hotel.description}
+          {branch.description}
         </p>
 
         {/* Amenities */}
         <div className="flex items-center space-x-3 mb-4">
-          {hotel.amenities.slice(0, 4).map((amenity, index) => (
+          {branch.amenities.slice(0, 4).map((amenity, index) => (
             <div key={index} className="flex items-center text-gray-500" title={amenity}>
               {amenityIcons[amenity.toLowerCase()] || <div className="w-4 h-4 bg-gray-300 rounded" />}
             </div>
           ))}
-          {hotel.amenities.length > 4 && (
-            <span className="text-xs text-gray-500">+{hotel.amenities.length - 4} more</span>
+          {branch.amenities.length > 4 && (
+            <span className="text-xs text-gray-500">+{branch.amenities.length - 4} more</span>
           )}
         </div>
 
@@ -125,18 +125,18 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, variant = 'default', class
           <div className="space-y-1">
             <div className="flex items-center space-x-2">
               <span className="text-2xl font-bold text-vinotel-primary">
-                ${hotel.price}
+                ${branch.price}
               </span>
-              {hotel.originalPrice && (
+              {branch.originalPrice && (
                 <span className="text-sm text-gray-500 line-through">
-                  ${hotel.originalPrice}
+                  ${branch.originalPrice}
                 </span>
               )}
             </div>
             <span className="text-xs text-gray-500">per night</span>
           </div>
           
-          <Link to={`/hotel/${hotel.id}`}>
+          <Link to={`/branch/${branch.id}`}>
             <Button size="sm" className="px-6">
               View Details
             </Button>
@@ -147,4 +147,4 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, variant = 'default', class
   );
 };
 
-export default HotelCard;
+export default BranchCard;
